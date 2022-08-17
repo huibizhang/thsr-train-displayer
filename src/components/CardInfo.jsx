@@ -1,5 +1,5 @@
 const CardInfo = (props) => {
-  const { title = "", isDest = false } = props;
+  const { title = "" } = props;
   const child = props.children;
 
   return (

@@ -1,3 +1,5 @@
+import clsx from "clsx";
+import { useEffect, useState } from "react";
 import Step from "./Step";
 
 const Stepper = (props) => {
@@ -6,6 +8,17 @@ const Stepper = (props) => {
     isSouthbound = true,
     willArrived = [],
   } = props;
+
+  const [_willArrived, setWillArrived] = useState(willArrived);
+  const [_currentStation, setCurrentStation] = useState(currentStation);
+
+  useEffect(() => {
+    setWillArrived(willArrived);
+  }, [willArrived]);
+
+  useEffect(() => {
+    setWillArrived(currentStation);
+  }, [currentStation]);
 
   const getStations = () => {
     const stations = [
@@ -28,9 +41,14 @@ const Stepper = (props) => {
   };
 
   return (
-    <div className="flex bg-gray-900">
+    <div
+      className={clsx([
+        "flex bg-gray-900",
+        _willArrived.length === 0 && "opacity-0",
+      ])}
+    >
       {getStations().map((station, index) => {
-        const currentStationIndex = getStations().indexOf(currentStation);
+        const currentStationIndex = getStations().indexOf(_currentStation);
 
         let status = -1;
 
@@ -42,7 +60,7 @@ const Stepper = (props) => {
             key={station}
             name={station}
             state={status}
-            willArrived={willArrived.indexOf(station) > -1}
+            willArrived={_willArrived.indexOf(station) > -1}
             isSouthbound={isSouthbound}
           ></Step>
         );

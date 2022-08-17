@@ -1,40 +1,37 @@
 import React, { useState } from "react";
 import Stepper from "./Stepper";
 import CardInfo from "./CardInfo";
+import clsx from "clsx";
 
 const PlatformCard = (props) => {
   const {
-    currentStation = "台北",
-    stationsWillArrive = [
-      "南港",
-      "台北",
-      "板橋",
-      "桃園",
-      "新竹",
-      "苗栗",
-      "台中",
-      "彰化",
-      "雲林",
-      "嘉義",
-      "台南",
-      "左營",
-    ],
+    currentStation = "南港",
+    stationsWillArrive = [],
     isSouthbound = true,
     trainData = {
-      number: 153,
-      to: "左營",
-      departureTime: "18:31",
-      freeSeat: "10-12",
+      number: "",
+      to: "",
+      departureTime: "",
+      freeSeat: "",
     },
   } = props;
 
   return (
-    <div className="relative w-full rounded-xl border bg-gray-900 py-2 px-3">
+    <div className="relative min-w-0 rounded-xl border bg-gray-900 py-2 px-3">
       <div className="grid grid-cols-2 space-y-1">
         <CardInfo title="本班列車">{trainData.number}</CardInfo>
-        <CardInfo title="列車開往">{trainData.to}</CardInfo>
+        <CardInfo title="列車開往">
+          <span
+            className={clsx([isSouthbound ? "text-green-400" : "text-sky-400"])}
+          >
+            {trainData.to}
+          </span>
+        </CardInfo>
         <CardInfo title="開車時間">{trainData.departureTime}</CardInfo>
-        <CardInfo title="自 由 座">{trainData.freeSeat}車</CardInfo>
+        <CardInfo title="自 由 座">
+          {trainData.freeSeat}
+          {trainData.freeSeat !== "" ? "車" : ""}
+        </CardInfo>
       </div>
 
       <Stepper

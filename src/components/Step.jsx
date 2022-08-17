@@ -1,5 +1,5 @@
 import clsx from "clsx";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import stationStatus from "../stationState";
 
 const Step = (props) => {
@@ -12,6 +12,13 @@ const Step = (props) => {
 
   const [stationName, setStationName] = useState(name);
   const [stationState, setStationState] = useState(state);
+  const [_willArrived, setWillArrived] = useState(willArrived);
+
+  useEffect(() => {
+    setStationName(name);
+    setStationState(state);
+    setWillArrived(willArrived);
+  }, [name, state, willArrived]);
 
   const getStatusColor = (passedColor, currentColor, destColor) => {
     let result = "bg-gray-400";
@@ -44,7 +51,7 @@ const Step = (props) => {
             isSouthbound ? "text-green-400" : "text-sky-400",
             "text-white"
           ),
-          !willArrived && "opacity-0",
+          !_willArrived && "opacity-0",
         ])}
       >
         {stationName}
@@ -80,7 +87,7 @@ const Step = (props) => {
               "bg-white",
               isSouthbound ? "bg-green-400" : "bg-sky-400"
             ),
-            !willArrived && "opacity-0",
+            !_willArrived && "opacity-0",
           ])}
         ></div>
       </div>
