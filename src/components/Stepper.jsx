@@ -17,7 +17,7 @@ const Stepper = (props) => {
   }, [willArrived]);
 
   useEffect(() => {
-    setWillArrived(currentStation);
+    setCurrentStation(currentStation);
   }, [currentStation]);
 
   const getStations = () => {
@@ -43,7 +43,7 @@ const Stepper = (props) => {
   return (
     <div
       className={clsx([
-        "flex bg-gray-900",
+        "flex bg-gray-900 transition-all",
         _willArrived.length === 0 && "opacity-0",
       ])}
     >

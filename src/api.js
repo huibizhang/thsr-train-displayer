@@ -18,7 +18,7 @@ export async function getTrainsOfStation(stationID) {
 }
 
 export async function getTrainInfo(trainNo) {
-  const apiUrl = `https://ptx.transportdata.tw/MOTC/v2/Rail/THSR/DailyTimetable/Today/TrainNo/${trainNo}?%24top=30&%24format=JSON`;
+  const apiUrl = `https://ptx.transportdata.tw/MOTC/v2/Rail/THSR/DailyTimetable/Today/TrainNo/${trainNo}?%24select=StopTimes&%24top=30&%24format=JSON`;
 
   return fetchAPI(apiUrl);
 }

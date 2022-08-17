@@ -45,7 +45,7 @@ const Step = (props) => {
     <div className="group w-20 py-2 text-center">
       <div
         className={clsx([
-          "w-full pb-1 font-bold",
+          "w-full pb-1 font-bold transition-all",
           getStatusColor(
             "text-gray-400",
             isSouthbound ? "text-green-400" : "text-sky-400",
@@ -60,7 +60,7 @@ const Step = (props) => {
         <div className="flex w-full">
           <div
             className={clsx([
-              "h-1 flex-1 group-first:opacity-0",
+              "h-1 flex-1 transition-all group-first:opacity-0",
               getStatusColor(
                 "bg-gray-400",
                 "bg-gray-400",
@@ -70,7 +70,7 @@ const Step = (props) => {
           ></div>
           <div
             className={clsx([
-              "h-1 flex-1 bg-gray-400 group-last:opacity-0",
+              "h-1 flex-1 bg-gray-400 transition-all group-last:opacity-0",
               getStatusColor(
                 "bg-gray-400",
                 isSouthbound ? "bg-green-400" : "bg-sky-400",
@@ -81,7 +81,7 @@ const Step = (props) => {
         </div>
         <div
           className={clsx([
-            "absolute h-3 w-3 rounded-full",
+            "absolute h-3 w-3 rounded-full transition-all",
             getStatusColor(
               "bg-gray-400",
               "bg-white",
