@@ -11,10 +11,28 @@ function BoundCard(props) {
     setPlatformDatas(platformData);
   }, [platformData]);
 
+  const getPlatformData = (index) => {
+    if (platformDatas.length > 0) {
+      return platformDatas[index];
+    } else {
+      return {
+        currentStation: "南港",
+        stationsWillArrive: [],
+        isSouthbound: true,
+        trainData: {
+          number: "",
+          to: "",
+          departureTime: "",
+          freeSeat: "",
+        },
+      };
+    }
+  };
+
   return (
     <div className="min-w-0 flex-1 bg-gray-900 p-2">
       <div>{child}</div>
-      <PlatformCard {...platformDatas[0]}></PlatformCard>
+      <PlatformCard {...getPlatformData(0)}></PlatformCard>
 
       <div className="mb-1 mt-2.5 text-xl font-bold text-white">
         <marquee>
@@ -22,7 +40,7 @@ function BoundCard(props) {
         </marquee>
       </div>
 
-      <PlatformCard {...platformDatas[1]}></PlatformCard>
+      <PlatformCard {...getPlatformData(1)}></PlatformCard>
     </div>
   );
 }

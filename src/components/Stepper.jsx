@@ -4,7 +4,7 @@ import Step from "./Step";
 
 const Stepper = (props) => {
   const {
-    currentStation = "台北",
+    currentStation = "南港",
     isSouthbound = true,
     willArrived = [],
   } = props;

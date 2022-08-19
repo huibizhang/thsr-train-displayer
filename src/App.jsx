@@ -4,10 +4,11 @@ import AnalogClock from "./components/AnalogClock";
 import DigitalClock from "./components/DigitalClock";
 import { getStations, getTrainsOfStation, getTrainInfo } from "./api";
 import clsx from "clsx";
+import store from "./store";
 
 function App() {
-  const [stations, setStations] = useState([]);
-  const [trains, setTrains] = useState([]);
+  const [stations, setStations] = useState(store.stations);
+  const [trains, setTrains] = useState(store.trains);
 
   const [selectedStation, setSelectedStation] = useState(0);
 
@@ -16,10 +17,7 @@ function App() {
 
   const [selectorLocker, setSelectorLocker] = useState(false);
 
-  const lastTime = 0;
-
-  const _southboundPlatformData = [];
-  const _northboundPlatformData = [];
+  let lastTime = 0;
 
   useEffect(() => {
     getStations().then((result) => {
@@ -29,25 +27,39 @@ function App() {
           name: station.StationName.Zh_tw,
         };
       });
-      setStations(temp);
+      store.stations = temp;
+      setStations(store.stations);
 
-      setInterval(getNextTwoTrains, 1000);
+      timeChecker();
     });
   }, []);
 
   useEffect(() => {
-    if (stations.length > 0) {
-      setStationIndex(selectedStation);
-    }
+    // if (stations.length > 0) {
+    //   setStationIndex(selectedStation);
+    // }
+    console.log("stations.length === ", stations.length);
   }, [stations]);
 
   const setStationIndex = (index) => {
-    setSelectedStation(index);
+    setSelectedStation(index - 1);
 
-    const { stationID } = stations[index];
+    const st = stations ?? store.stations;
+    console.log(st);
+
+    const { stationID } = st[index - 1];
 
     getTrainsOfStation(stationID).then((result) => {
-      setTrains(result);
+      if (result) {
+        if (result.length > 0) {
+          store.trains = result;
+          setTrains(store.trains);
+          // trains = result;
+          // console.log(result);
+
+          getNextTwoTrains();
+        }
+      }
     });
 
     // setSelectorLocker(true);
@@ -55,19 +67,40 @@ function App() {
   };
 
   useEffect(() => {
-    getNextTwoTrains();
+    if (trains.length > 0) {
+      getNextTwoTrains();
+    }
+    console.log("trains changed\ntrains.length === ", trains.length);
   }, [trains]);
 
+  const timeChecker = () => {
+    const d = new Date();
+    d.setSeconds(0);
+    const now = d.getTime();
+
+    if (now - lastTime >= 30000) {
+      console.log(now - lastTime);
+      lastTime = now;
+
+      console.log(store);
+
+      getNextTwoTrains();
+    }
+
+    setTimeout(timeChecker, 1000);
+  };
+
   const getNextTwoTrains = () => {
-    if (trains.length === 0) return;
+    if (trains.length === 0) {
+      console.log("trains.length === ", trains.length);
+      // return;
+    }
 
     // const now = new Date("2022-08-17 12:00").getTime();
     const now = new Date().getTime();
 
     const nextTwoSouthTrains = getTrainByTime(now, true, 2);
     const nextTwoNorthTrains = getTrainByTime(now, false, 2);
-
-    console.log(nextTwoNorthTrains);
 
     let tempKeyNew, tempKey;
 
@@ -92,10 +125,19 @@ function App() {
       getNorthboundTrainsTimes(nextTwoNorthTrains);
     }
     console.log("North", tempKey, tempKeyNew);
+
+    console.log("IN getNextTwoTrains()\ntrains.length === ", trains.length);
   };
 
   const getTrainByTime = (startTime, isSouthbound, max) => {
     const direction = isSouthbound ? 0 : 1;
+
+    console.log(
+      "\nstations.length === ",
+      stations.length,
+      "IN getTrainByTime()\ntrains.length === ",
+      trains.length
+    );
 
     return trains
       .filter((train) => {
@@ -106,6 +148,10 @@ function App() {
       })
       .filter((train, index) => index < max)
       .map((train) => {
+        const { TrainDate, DepartureTime } = train;
+        const trainTime = new Date(`${TrainDate} ${DepartureTime}`).getTime();
+        console.log(train.TrainNo, startTime, trainTime);
+
         return {
           currentStation: stations[selectedStation].name,
           stationsWillArrive: [],
@@ -174,9 +220,10 @@ function App() {
           }}
           disabled={selectorLocker}
         >
+          <option value={0}></option>
           {stations.map((station, index) => {
             return (
-              <option key={station.stationID} value={index}>
+              <option key={station.stationID} value={index + 1}>
                 {station.name}
               </option>
             );

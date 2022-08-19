@@ -22,9 +22,15 @@ const PlatformCard = (props) => {
 
   useEffect(() => {
     setCurrentStation(currentStation);
+  }, [currentStation]);
+
+  useEffect(() => {
     setWillArrive(stationsWillArrive);
+  }, [stationsWillArrive]);
+
+  useEffect(() => {
     setTrainData(trainData);
-  }, [currentStation, stationsWillArrive, trainData]);
+  }, [trainData]);
 
   return (
     <div className="relative min-w-0 rounded-xl border bg-gray-900 py-2 px-3">
@@ -46,7 +52,7 @@ const PlatformCard = (props) => {
 
       <Stepper
         currentStation={_currentStation}
-        willArrived={[...willArrive]}
+        willArrived={willArrive}
         isSouthbound={isSouthbound}
       ></Stepper>
 
