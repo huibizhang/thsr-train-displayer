@@ -53,7 +53,7 @@ const App = () => {
   }, [selectedStation]);
 
   const setStationIndex = (index) => {
-    if (index === 0) return;
+    if (index == 0) return;
 
     setSelectedStation(index - 1);
 
