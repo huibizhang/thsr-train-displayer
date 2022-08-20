@@ -6,7 +6,7 @@ import { getStations, getTrainsOfStation, getTrainInfo } from "./api";
 import clsx from "clsx";
 import store from "./store";
 
-function App() {
+const App = () => {
   const [stations, setStations] = useState(store.stations);
   const [trains, setTrains] = useState(store.trains);
 
@@ -42,6 +42,8 @@ function App() {
   }, [stations]);
 
   const setStationIndex = (index) => {
+    if (index === 0) return;
+
     setSelectedStation(index - 1);
 
     const st = stations ?? store.stations;
@@ -57,7 +59,7 @@ function App() {
           // trains = result;
           // console.log(result);
 
-          getNextTwoTrains();
+          // getNextTwoTrains();
         }
       }
     });
@@ -68,7 +70,7 @@ function App() {
 
   useEffect(() => {
     if (trains.length > 0) {
-      getNextTwoTrains();
+      // getNextTwoTrains();
     }
     console.log("trains changed\ntrains.length === ", trains.length);
   }, [trains]);
@@ -84,7 +86,21 @@ function App() {
 
       console.log(store);
 
-      getNextTwoTrains();
+      if (stations?.length === 0) {
+        setStations(store.stations);
+      }
+      if (trains?.length === 0) {
+        setTrains(store.trains);
+      }
+
+      console.log(
+        "IN timer()",
+        "\nstations.length === ",
+        stations.length,
+        "\ntrains.length === ",
+        trains.length
+      );
+      // getNextTwoTrains();
     }
 
     setTimeout(timeChecker, 1000);
@@ -133,9 +149,10 @@ function App() {
     const direction = isSouthbound ? 0 : 1;
 
     console.log(
+      "IN getTrainByTime()",
       "\nstations.length === ",
       stations.length,
-      "IN getTrainByTime()\ntrains.length === ",
+      "\ntrains.length === ",
       trains.length
     );
 
@@ -255,6 +272,6 @@ function App() {
       </div>
     </div>
   );
-}
+};
 
 export default App;
