@@ -8,20 +8,17 @@ import store from "./store";
 
 const App = () => {
   const [stations, setStations] = useState(store.stations);
-  const newestStations = useRef(stations);
 
   const [trains, setTrains] = useState(store.trains);
-  const newestTrains = useRef(trains);
 
   const [selectedStation, setSelectedStation] = useState(0);
-  const lastestSelectedStation = useRef(selectedStation);
 
   const [southboundPlatformData, setSouthboundPlatformData] = useState([]);
   const [northboundPlatformData, setNorthboundPlatformData] = useState([]);
-  const newestSouthboundPFD = useRef(southboundPlatformData);
-  const newestNorthboundPFD = useRef(northboundPlatformData);
 
   const [selectorLocker, setSelectorLocker] = useState(false);
+
+  const timer = useRef(null);
 
   let lastTime = 0;
 
@@ -36,7 +33,7 @@ const App = () => {
       store.stations = temp;
       setStations(store.stations);
 
-      timeChecker();
+      timer.current();
     });
   }, []);
 
@@ -86,7 +83,7 @@ const App = () => {
     console.log("trains changed\ntrains.length === ", trains.length);
   }, [trains]);
 
-  function timeChecker() {
+  timer.current = () => {
     const d = new Date();
     d.setSeconds(0);
     d.setMilliseconds(0);
@@ -115,12 +112,12 @@ const App = () => {
       getNextTwoTrains();
     }
 
-    setTimeout(timeChecker, 1000);
-  }
+    setTimeout(timer.current, 1000);
+  };
 
   function getNextTwoTrains() {
-    console.log("trains.length === ", newestTrains.current.length);
-    if (newestTrains.current.length === 0) {
+    console.log("trains.length === ", trains.length);
+    if (trains.length === 0) {
       // return;
     }
 
@@ -138,7 +135,7 @@ const App = () => {
     tempKeyNew = nextTwoSouthTrains
       .map((t) => t.trainOriginData.TrainNo + t.currentStation)
       .join("");
-    tempKey = newestSouthboundPFD.current
+    tempKey = southboundPlatformData
       .map((t) => t.trainOriginData.TrainNo + t.currentStation)
       .join("");
     if (tempKeyNew !== tempKey) {
@@ -149,7 +146,7 @@ const App = () => {
     tempKeyNew = nextTwoNorthTrains
       .map((t) => t.trainOriginData.TrainNo + t.currentStation)
       .join("");
-    tempKey = newestNorthboundPFD.current
+    tempKey = northboundPlatformData
       .map((t) => t.trainOriginData.TrainNo + t.currentStation)
       .join("");
     if (tempKeyNew !== tempKey) {
@@ -157,10 +154,7 @@ const App = () => {
     }
     console.log("North", tempKey, tempKeyNew);
 
-    console.log(
-      "IN getNextTwoTrains()\ntrains.length === ",
-      newestTrains.current.length
-    );
+    console.log("IN getNextTwoTrains()\ntrains.length === ", trains.length);
   }
 
   const getTrainByTime = (startTime, isSouthbound, max) => {
@@ -169,9 +163,9 @@ const App = () => {
     console.log(
       "IN getTrainByTime()",
       "\nstations.length === ",
-      newestStations.current.length,
+      stations.length,
       "\ntrains.length === ",
-      newestTrains.current.length
+      trains.length
     );
 
     return newestTrains.current
@@ -188,8 +182,7 @@ const App = () => {
         console.log(train.TrainNo, startTime, trainTime);
 
         return {
-          currentStation:
-            newestStations.current[lastestSelectedStation.current].name,
+          currentStation: stations[selectedStation].name,
           stationsWillArrive: [],
           isSouthbound: isSouthbound,
           trainData: {
