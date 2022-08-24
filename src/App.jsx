@@ -41,13 +41,8 @@ const App = () => {
     // if (stations.length > 0) {
     //   setStationIndex(selectedStation);
     // }
-    newestStations.current = stations;
     console.log("stations.length === ", stations.length);
   }, [stations]);
-
-  useEffect(() => {
-    lastestSelectedStation.current = selectedStation;
-  }, [selectedStation]);
 
   const setStationIndex = (index) => {
     if (index == 0) return;
@@ -74,8 +69,6 @@ const App = () => {
   };
 
   useEffect(() => {
-    newestTrains.current = trains;
-
     if (trains.length > 0) {
       getNextTwoTrains();
     }
@@ -168,7 +161,7 @@ const App = () => {
       trains.length
     );
 
-    return newestTrains.current
+    return trains
       .filter((train) => {
         const { TrainDate, DepartureTime, Direction } = train;
         const trainTime = new Date(`${TrainDate} ${DepartureTime}`).getTime();
@@ -195,11 +188,6 @@ const App = () => {
         };
       });
   };
-
-  useEffect(() => {
-    newestSouthboundPFD.current = southboundPlatformData;
-    newestNorthboundPFD.current = northboundPlatformData;
-  }, [southboundPlatformData, northboundPlatformData]);
 
   const getSouthboundTrainsTimes = (trainsData) => {
     trainsData.forEach((train, index) => {
