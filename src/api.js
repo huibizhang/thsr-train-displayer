@@ -1,5 +1,5 @@
 import axios from "axios";
-import moment from "moment";
+import { DateTime } from "luxon";
 
 export async function getStations() {
   const apiUrl =
@@ -96,8 +96,7 @@ export async function getStations() {
 }
 
 export async function getTrainsOfStation(stationID) {
-  const dt = new Date();
-  const today = moment(dt).format("YYYY-MM-DD");
+  const today = DateTime.now().toFormat("yyyy-MM-dd");
 
   const apiUrl = `https://ptx.transportdata.tw/MOTC/v2/Rail/THSR/DailyTimetable/Station/${stationID}/${today}?%24select=TrainDate%2CDepartureTime%2CTrainNo%2CEndingStationName&%24top=150&%24format=JSON`;
 
